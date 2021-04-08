@@ -26,6 +26,7 @@ public class Currency {
 public static int apiCC() throws IOException {
     // Setting URL
     String url_str = "https://v6.exchangerate-api.com/v6/41795997b82e619cb9fb665f/latest/USD";
+    String pair_conversion = "https://v6.exchangerate-api.com/v6/41795997b82e619cb9fb665f/pair/USD/EUR";
 
 // Making Request
     URL url = new URL(url_str);

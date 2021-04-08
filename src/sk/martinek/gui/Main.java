@@ -1,4 +1,4 @@
-package sample;
+package sk.martinek.gui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -15,6 +15,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import sk.martinek.api.ApiRequest;
+import sk.martinek.api.MediumApi;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class Main extends Application {
 
@@ -89,8 +96,17 @@ public class Main extends Application {
     }
 
 
-    public static void main(String[] args) {
-        launch(args);
+    public static void main(String[] args) throws IOException {
+       // launch(args);
 
+        Set<String> set = new HashSet<>();
+        set.add("USD");
+        set.add("BTC");
+
+
+        MediumApi quest = new MediumApi();
+        Map map = quest.getExchangeRates(set);
+
+        System.out.println(map.toString());
     }
 }
