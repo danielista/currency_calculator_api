@@ -16,7 +16,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import sk.martinek.api.ApiRequest;
+import sk.martinek.api.Currency;
 import sk.martinek.api.MediumApi;
+import sk.martinek.calc.CalcRates;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -28,7 +30,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
        // Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-
+        Currency cc = new Currency();
 
 
 
@@ -37,15 +39,20 @@ public class Main extends Application {
 
         Label fromLabel = new Label("From ");
         Label toLabel = new Label("To ");
+        Label resultLabel = new Label();
+        resultLabel.setText("...");
+        Label resultConversionLabel = new Label();
+        resultConversionLabel.setText("...");
+
 
         ComboBox<String> fromCurrencies = new ComboBox<>();
         fromCurrencies.setEditable(false);
-        fromCurrencies.getItems().addAll("USD","EUR","BTC");
+        fromCurrencies.getItems().addAll("USD","EUR","CZK","GBP");
         fromCurrencies.setPromptText("Currency");
         fromCurrencies.setPrefWidth(100);
         ComboBox<String> toCurrencies = new ComboBox<>();
         toCurrencies.setEditable(false);
-        toCurrencies.getItems().addAll("USD","EUR","BTC");
+        toCurrencies.getItems().addAll("USD","EUR","CZK","GBP");
         toCurrencies.setPromptText("Currency");
         toCurrencies.setPrefWidth(100);
 
@@ -53,17 +60,33 @@ public class Main extends Application {
         from.setPromptText("1");
         from.setPrefWidth(100);
 
-        Button calculate = new Button();
-        calculate.setText("CONVERT");
-        calculate.setPrefWidth(70);
-        calculate.setStyle("-fx-background-color: green; \n" +
-                "-fx-text-fill: white; ");
-        calculate.setOnAction(event -> {
-            System.out.println("say hello :D");
-        });
+                  Button calculate = new Button();
+                    calculate.setText("CONVERT");
+                    calculate.setPrefWidth(70);
+                    calculate.setStyle("-fx-background-color: green; \n" +
+                            "-fx-text-fill: white; ");
+                    calculate.setOnAction(event -> {
+                            System.out.println("say hello :D Converting...");
+                            String fromCurr = fromCurrencies.getValue();
+                            String toCurr = toCurrencies.getValue();
+                            try {
+                                Double resultik = cc.convertorApi(fromCurr,toCurr);
+                                resultLabel.setText("Kurz: " + resultik.toString());
 
-        Label resultLabel = new Label();
-        resultLabel.setText("...");
+                                Double kolko = Double.parseDouble(from.getText().trim());
+                                System.out.println("kolko:  "+kolko+ " "+ fromCurr);
+
+                                kolko = kolko * resultik;
+                                String vysledok = String.valueOf(kolko );
+
+                                resultConversionLabel.setText("="+vysledok + " "+toCurr);
+                                System.out.println("= "+vysledok + " "+toCurr);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                    });
+
+
 
 
         GridPane middle = new GridPane();
@@ -83,6 +106,7 @@ public class Main extends Application {
 
         middle.add(calculate,1,2);
         middle.add(resultLabel,1,4);
+        middle.add(resultConversionLabel,2,4);
 
 
         BorderPane BPane = new BorderPane(middle);
@@ -97,16 +121,19 @@ public class Main extends Application {
 
 
     public static void main(String[] args) throws IOException {
-       // launch(args);
+        launch(args);
 
         Set<String> set = new HashSet<>();
         set.add("USD");
         set.add("BTC");
 
-
         MediumApi quest = new MediumApi();
         Map map = quest.getExchangeRates(set);
 
         System.out.println(map.toString());
+
+        Currency cc = new Currency();
+        //  System.out.println(cc.apiCC("CZK"));
+        //  System.out.println(cc.convertorApi("EUR","EUR"));
     }
 }

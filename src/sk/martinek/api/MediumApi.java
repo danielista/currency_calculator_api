@@ -20,11 +20,15 @@ public class MediumApi {
         String inline = "";
         try {
 
-            URL url = new URL("http://api.exchangeratesapi.io/v1/latest?access_key=50300a83f913b25452f3d815436498db&format=1");
+            //URL url = new URL("http://api.exchangeratesapi.io/v1/latest?access_key=50300a83f913b25452f3d815436498db&format=1");
+            URL url = new URL("http://api.exchangeratesapi.io/v1/latest?access_key=7f193180007ca666e168d9cd573780e6&format=1");
+
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
+
+
 
             //Getting the response code
             int responsecode = conn.getResponseCode();
@@ -40,7 +44,7 @@ public class MediumApi {
                 }
                 scanner.close();
 
-                System.out.println(inline);
+                //System.out.println(inline);
 
             }
 
