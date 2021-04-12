@@ -18,13 +18,10 @@ public class Currency {
     public static void main(String[] args) throws Exception {
 
 
-
-
-
     }
 
 
-    //throws a RATE
+    // throws a RATE
     public double apiCC(String from) throws IOException {
             // Setting URL
 
