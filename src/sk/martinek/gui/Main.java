@@ -19,6 +19,7 @@ import sk.martinek.api.ApiRequest;
 import sk.martinek.api.Currency;
 import sk.martinek.api.MediumApi;
 import sk.martinek.calc.CalcRates;
+import sk.martinek.database.Database;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -121,8 +122,10 @@ public class Main extends Application {
 
 
     public static void main(String[] args) throws IOException {
-        launch(args);
-
+        //launch(args);
+        Database db = new Database();
+        db.testMongo();
+/*
         Set<String> set = new HashSet<>();
         set.add("USD");
         set.add("BTC");
@@ -135,5 +138,7 @@ public class Main extends Application {
         Currency cc = new Currency();
         //  System.out.println(cc.apiCC("CZK"));
         //  System.out.println(cc.convertorApi("EUR","EUR"));
+
+        */
     }
 }
