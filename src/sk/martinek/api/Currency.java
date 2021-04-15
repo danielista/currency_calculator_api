@@ -21,7 +21,7 @@ public class Currency {
     }
 
 
-    // throws a RATE
+    // throws a RATE only to USD currency
     public double apiCC(String from) throws IOException {
             // Setting URL
 
@@ -63,7 +63,7 @@ public class Currency {
 
 
 
-
+    // multi curruency convertor
     //////////////////////////////////////////////////
 
     public double convertorApi(String from, String to) throws IOException {
@@ -78,7 +78,6 @@ public class Currency {
         JsonParser jp = new JsonParser();
         JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent()));
         JsonObject jsonobj = root.getAsJsonObject();
-
 
         String kurza = jsonobj.get("conversion_rate").getAsString();
         double kurz = Double.parseDouble(kurza);

@@ -10,6 +10,7 @@ import org.bson.Document;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import sk.martinek.gui.Main;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,16 +29,22 @@ public class Database {
     private static MongoCollection<Document> test;
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public void testMongo(){
+    public void testMongo(String from, String to, Double result){
+        Main mn = new Main();
 
         //database.createCollection("test");
         //database.createCollection("test", null);
+        System.out.println(from);
+        System.out.println(to);
+        System.out.println(result);
+        System.out.println("ide? :D");
 
         //Preparing a document
         Document document = new Document();
-        document.append("name", "Daniel");
-        document.append("age", 26);
-        document.append("company", "KE_academy_SE");
+        document.append("from", from);
+        document.append("to", to);
+        document.append("rate", result);
+        document.append("time of conversion", format.format(new Date()));
         //Inserting the document into the collection
         database.getCollection("test").insertOne(document);
         System.out.println("Document inserted successfully");

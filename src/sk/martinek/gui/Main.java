@@ -27,11 +27,15 @@ import java.util.Map;
 import java.util.Set;
 
 public class Main extends Application {
+    private Double resultik;
+    private String fromCurr;
+    private String toCurr;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
        // Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         Currency cc = new Currency();
+        Database db = new Database();
 
 
 
@@ -68,20 +72,24 @@ public class Main extends Application {
                             "-fx-text-fill: white; ");
                     calculate.setOnAction(event -> {
                             System.out.println("say hello :D Converting...");
-                            String fromCurr = fromCurrencies.getValue();
-                            String toCurr = toCurrencies.getValue();
+                            fromCurr = fromCurrencies.getValue();
+                            toCurr = toCurrencies.getValue();
+
                             try {
-                                Double resultik = cc.convertorApi(fromCurr,toCurr);
+                                resultik = cc.convertorApi(fromCurr,toCurr);
                                 resultLabel.setText("Kurz: " + resultik.toString());
 
                                 Double kolko = Double.parseDouble(from.getText().trim());
                                 System.out.println("kolko:  "+kolko+ " "+ fromCurr);
 
+                                // konverzia.. možem hodiť do triedy calcrates
                                 kolko = kolko * resultik;
                                 String vysledok = String.valueOf(kolko );
 
                                 resultConversionLabel.setText("="+vysledok + " "+toCurr);
                                 System.out.println("= "+vysledok + " "+toCurr);
+
+                                db.testMongo(fromCurr,toCurr,resultik);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -122,9 +130,9 @@ public class Main extends Application {
 
 
     public static void main(String[] args) throws IOException {
-        //launch(args);
-        Database db = new Database();
-        db.testMongo();
+          launch(args);
+       // Database db = new Database();
+       // db.testMongo();
 /*
         Set<String> set = new HashSet<>();
         set.add("USD");
