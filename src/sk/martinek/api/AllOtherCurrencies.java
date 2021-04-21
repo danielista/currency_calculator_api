@@ -13,7 +13,7 @@ import com.google.gson.JsonParser;
 
 
 
-public class Currency {
+public class AllOtherCurrencies {
 
     public static void main(String[] args) throws Exception {
 
@@ -43,12 +43,12 @@ public class Currency {
 
 
             String converzie = fok.get("USD").getAsString();
-             System.out.println(converzie);
-             // request.disconnect();
+            System.out.println(converzie);
 
-              double kurz = Double.parseDouble(converzie);
-              System.out.println(kurz);
-        return kurz;
+            double kurz = Double.parseDouble(converzie);
+            System.out.println(kurz);
+
+            return kurz;
     }
 
 

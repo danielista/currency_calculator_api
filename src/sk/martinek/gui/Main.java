@@ -1,10 +1,7 @@
 package sk.martinek.gui;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -12,19 +9,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import sk.martinek.api.ApiRequest;
-import sk.martinek.api.Currency;
-import sk.martinek.api.MediumApi;
+import sk.martinek.api.AllOtherCurrencies;
 import sk.martinek.calc.CalcRates;
 import sk.martinek.database.Database;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 public class Main extends Application {
     private Double resultik;
@@ -34,9 +24,9 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
        // Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        Currency cc = new Currency();
+        AllOtherCurrencies cc = new AllOtherCurrencies();
         Database db = new Database();
-
+        CalcRates calculator = new CalcRates();
 
 
 
@@ -46,9 +36,11 @@ public class Main extends Application {
         Label toLabel = new Label("To ");
         Label resultLabel = new Label();
         resultLabel.setText("...");
+        Label vyslednaHodnota = new Label("výsledná hodnota");
         Label resultConversionLabel = new Label();
         resultConversionLabel.setText("...");
-
+        resultConversionLabel.setStyle("-fx-background-color: black ; \n" +
+                "-fx-text-fill: white;  \n " + "-fx-font-size: 30px;  ");
 
         ComboBox<String> fromCurrencies = new ComboBox<>();
         fromCurrencies.setEditable(false);
@@ -57,7 +49,7 @@ public class Main extends Application {
         fromCurrencies.setPrefWidth(100);
         ComboBox<String> toCurrencies = new ComboBox<>();
         toCurrencies.setEditable(false);
-        toCurrencies.getItems().addAll("USD","EUR","CZK","GBP");
+        toCurrencies.getItems().addAll("USD","EUR","CZK","GBP","BTC");
         toCurrencies.setPromptText("Currency");
         toCurrencies.setPrefWidth(100);
 
@@ -65,7 +57,7 @@ public class Main extends Application {
         from.setPromptText("1");
         from.setPrefWidth(100);
 
-                  Button calculate = new Button();
+                    Button calculate = new Button();
                     calculate.setText("CONVERT");
                     calculate.setPrefWidth(70);
                     calculate.setStyle("-fx-background-color: green; \n" +
@@ -74,25 +66,40 @@ public class Main extends Application {
                             System.out.println("say hello :D Converting...");
                             fromCurr = fromCurrencies.getValue();
                             toCurr = toCurrencies.getValue();
+                            Double kolko = Double.parseDouble(from.getText().trim());
+                            System.out.println("kolko:  "+kolko+ " "+ fromCurr);
 
-                            try {
-                                resultik = cc.convertorApi(fromCurr,toCurr);
-                                resultLabel.setText("Kurz: " + resultik.toString());
+                            if(fromCurr.equals("EUR") && toCurr.equals("BTC")){
 
-                                Double kolko = Double.parseDouble(from.getText().trim());
-                                System.out.println("kolko:  "+kolko+ " "+ fromCurr);
+                                resultLabel.setText("Kurz: too much difficult");
+                                String btcResult = calculator.calculationBTCfromEUR(kolko);
+                                resultConversionLabel.setText(btcResult);
+                                // saving data to MONGO
+                                db.saveDataFromCalculator(fromCurr,kolko,toCurr,btcResult);
+                            }else if ((!fromCurr.equals("EUR")) && toCurr.equals("BTC")){
 
-                                // konverzia.. možem hodiť do triedy calcrates
-                                kolko = kolko * resultik;
-                                String vysledok = String.valueOf(kolko );
+                                resultConversionLabel.setText("Nepodporovaná konverzia");
+                                resultConversionLabel.setStyle("-fx-background-color: red ; \n" +
+                                        "-fx-text-fill: white;  \n " + "-fx-font-size: 15px;  ");
+                            }else {
+                                try {
+                                    //kurz statement
+                                    resultik = cc.convertorApi(fromCurr,toCurr);
+                                    resultLabel.setText("Kurz: " + resultik.toString());
 
-                                resultConversionLabel.setText("="+vysledok + " "+toCurr);
-                                System.out.println("= "+vysledok + " "+toCurr);
+                                    //result statement
+                                    String vysledok = calculator.calculatorMultiExchange(kolko,fromCurr,toCurr);
+                                    resultConversionLabel.setText("="+vysledok + " "+toCurr);
+                                    System.out.println("= "+vysledok + " "+toCurr);
 
-                                db.testMongo(fromCurr,toCurr,resultik);
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                                    // saving data to MONGO
+                                    db.saveDataFromCalculator(fromCurr,kolko,toCurr,vysledok);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
+
+
                     });
 
 
@@ -114,6 +121,7 @@ public class Main extends Application {
         middle.add(toCurrencies,1,1);
 
         middle.add(calculate,1,2);
+        middle.add(vyslednaHodnota,2,2);
         middle.add(resultLabel,1,4);
         middle.add(resultConversionLabel,2,4);
 

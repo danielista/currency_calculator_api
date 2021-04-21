@@ -29,11 +29,8 @@ public class Database {
     private static MongoCollection<Document> test;
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public void testMongo(String from, String to, Double result){
+    public void saveDataFromCalculator(String from, Double kolko, String to, String result){
         Main mn = new Main();
-
-        //database.createCollection("test");
-        //database.createCollection("test", null);
         System.out.println(from);
         System.out.println(to);
         System.out.println(result);
@@ -42,29 +39,12 @@ public class Database {
         //Preparing a document
         Document document = new Document();
         document.append("from", from);
+        document.append("how much", kolko);
         document.append("to", to);
-        document.append("rate", result);
+        document.append("result", result);
         document.append("time of conversion", format.format(new Date()));
         //Inserting the document into the collection
         database.getCollection("test").insertOne(document);
         System.out.println("Document inserted successfully");
     }
-
-
-/*
-    // pridanie kristianovej funkcie
-    public <T> void add(String from, String to, double value, T result){
-        test = database.getCollection("currency");
-        JSONObject object = new JSONObject();
-        object.put("datetime", format.format(new Date()));
-        object.put("value", value);
-        object.put("from", from);
-        object.put("to", to);
-        object.put("result", result);
-        System.out.println(object);
-        Document doc = Document.parse(object.toJSONString());
-        test.insertOne(doc);
-    }
-
- */
 }
